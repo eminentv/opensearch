@@ -1,0 +1,10 @@
+server.name: opendash
+server.host: 0.0.0.0
+opensearch.hosts: ["http://os-node-4:9200","http://os-node-5:9200"]
+opensearch.username: ${KIBANAUSER}
+opensearch.password: ${KIBANAPASS}
+opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+opensearch_security.multitenancy.enabled: true
+opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+opensearch_security.cookie.secure: true
+  #compatibility.override_main_response_version: true

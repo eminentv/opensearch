@@ -1,0 +1,17 @@
+---
+# Permissions for Vector
+vector-permissions:
+  reserved: false
+  hidden: false
+  allowed_actions:
+  - "cluster_composite_ops"
+  - "indices_all"
+  - "create_index"
+  - "read"
+  - "write"
+  - "crud"
+  static: true
+
+_meta:
+  type: "actiongroups"
+  config_version: 2

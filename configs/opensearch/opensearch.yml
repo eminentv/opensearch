@@ -1,0 +1,49 @@
+plugins.security.authcz.admin_dn:
+  - CN=admin,OU=eminent,O=eminent,L=Kingsland,ST=GA,C=US
+plugins.security.nodes_dn:
+  - CN=node,OU=eminent,O=eminent,L=Kingsland,ST=GA,C=US
+
+# Elasticsearch Configuration
+http.cors.enabled: true
+http.cors.allow-credentials: true
+http.cors.allow-origin: "*"
+http.cors.allow-headers: "Authorization, X-Requested-With,Content-Type,Content-Length"
+
+# Node Configs
+cluster.name: ${CLUSTERNAME}
+network.host: ${NETWORKHOST}
+node.name: ${NODENAME}
+node.roles: ${NODEROLES}
+cluster.initial_master_nodes: ${INTMAS}
+discovery.seed_hosts: ${SEEDDIS}
+cluster.routing.allocation.enable: all
+
+# Transport
+plugins.security.ssl.transport.pemcert_filepath: node.pem
+plugins.security.ssl.transport.pemkey_filepath: node-key.pem
+plugins.security.ssl.transport.pemtrustedcas_filepath: root-ca.pem
+plugins.security.ssl.transport.enforce_hostname_verification: false
+plugins.security.ssl.transport.resolve_hostname: false
+plugins.security.ssl.transport.enable_openssl_if_available: false
+
+# HTTPS
+plugins.security.ssl.http.enabled: false
+plugins.security.ssl.http.pemcert_filepath: node.pem
+plugins.security.ssl.http.pemkey_filepath: node-key.pem
+plugins.security.ssl.http.pemtrustedcas_filepath: root-ca.pem
+plugins.security.allow_unsafe_democertificates: true
+plugins.security.allow_default_init_securityindex: true
+plugins.security.ssl.http.clientauth_mode: NONE
+
+# Advanced Modules
+plugins.security.advanced_modules_enabled: true
+
+# Indices
+plugins.security.audit.type: internal_opensearch
+plugins.security.enable_snapshot_restore_privilege: true
+plugins.security.check_snapshot_restore_write_privileges: true
+plugins.security.restapi.roles_enabled: ["all_access", "security_rest_api_access"]
+plugins.security.system_indices.enabled: true
+plugins.security.system_indices.indices: [".opendistro-alerting-config", ".opendistro-alerting-alert*", ".opendistro-anomaly-results*", ".opendistro-anomaly-detector*", ".opendistro-anomaly-checkpoints", ".opendistro-anomaly-detection-state", ".opendistro-reports-*", ".opendistro-notifications-*", ".opendistro-notebooks", ".opendistro-asynchronous-search-response*"]
+node.max_local_storage_nodes: 3
+compatibility.override_main_response_version: false

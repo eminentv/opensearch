@@ -1,0 +1,35 @@
+version: '3.8'
+networks:
+  traefik-net:
+    external: true
+
+dsiem:
+    build:
+      context: ./dockerfiles/dsiem/.
+      args:
+        DSIEM_VERSION: ${DSIEM_VERSION}
+    image: eminent/dsiem
+    container_name: dsiem
+    restart: unless-stopped
+    env_file:
+      - ./.env
+      - ./.configs/environments/secrets.env
+    networks:
+      - traefik-net
+    volumes:
+      - ./logs/dsiem:/dsiem/logs
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=opensearch
+      - traefik.http.routers.opendash.rule=Host(`${DSIEM}.${DEVICE}.${URL}`)
+      - traefik.http.routers.opendash.entrypoints=websecure
+      - traefik.http.routers.opendash.tls=true
+      - traefik.http.services.opendash.loadbalancer.server.port=8080
+      - traefik.http.services.opendash.loadbalancer.server.scheme=http
+      - traefik.http.services.opendash.loadbalancer.passHostHeader=true
+      - traefik.frontend.headers.STSSeconds=315360000
+      - traefik.frontend.headers.browserXSSFilter=true
+      - traefik.frontend.headers.contentTypeNosniff=true
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSIncludeSubdomains=true
+      - traefik.frontend.headers.STSPreload=true

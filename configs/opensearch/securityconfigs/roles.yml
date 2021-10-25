@@ -1,0 +1,108 @@
+_meta:
+  type: "roles"
+  config_version: 2
+
+# Rescrict users so they can only view visualization and dashboard on Kibana
+kibana_read_only:
+  reserved: true
+
+# Security Rest API access role is used to assign specific users access to change the security settings through the REST API
+security_rest_api_access:
+  reserved: true
+
+# Allows users to view monitors, desinations and alerts
+alerting_read_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster:admin/opendistro/alerting/alerts/get'
+    - 'cluster:admin/opendistro/alerting/destination/get'
+    - 'cluster:admin/opendistro/alerting/monitor/get'
+    - 'cluster:admin/opendistro/alerting/monitor/search'
+
+# Allows users to view and acknowledge alerts
+alerting_ack_alerts:
+  reserved: true
+  cluster_permissions:
+    - 'cluster:admin/opendistro/alerting/alerts/*'
+  
+# Allows users to use all alerting functionality
+alerting_full_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster_monitor'
+    - 'cluster:admin/opendistro/alerting/alerting/*'
+  index_permissions:
+    - index_patterns:
+      - '*'
+      allowed_actions:
+      - 'indices_monitor'
+      - 'indices:admin/aliases/get'
+      - 'indices:admin/mappings/get'
+
+# allow users to read Anomaly Detection dectors and results
+anomaly_read_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster:admin/opendistro/ad/detector/info'
+    - 'cluster:admin/opendistro/ad/detector/search'
+    - 'cluster:admin/opendistro/ad/detectors/get'
+    - 'cluster:admin/opendiostro/ad/result/search'
+  
+# allows users to use all Anomaly Detection Functionality
+anomaly_full_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster_monitor'
+    - 'cluster:admin/opendistro/ad/*'
+  index_permissions:
+    - index_patterns:
+        - '*'
+      allowed_actions:
+        - 'indices_monitor'
+        - 'indices:admin/aliases/get'
+        - 'indices:admin/mappings/get'
+
+# Allows users to read and download Reports
+reports_instances_read_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster:admin/opendistro/reports/instance/list'
+    - 'cluster:admin/opendistro/reports/instance/get'
+    - 'cluster:admin/opendistro/reports/menu/download'
+
+reports_read_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster:admin/opendistro/reports/definition/get'
+    - 'cluster:admin/opendistro/reports/definition/list'
+    - 'cluster:admin/opendistro/reports/instance/list'
+    - 'cluster:admin/opendistro/reports/instance/get'
+    - 'cluster:admin/opendistro/reports/menu/download'
+
+# Allows users full report functionality
+reports_full_access:
+  reserved: true
+  cluster_permissions:
+    - 'cluster:admin/opendistro/reports/definition/create'
+    - 'cluster:admin/opendistro/reports/definition/update'
+    - 'cluster:admin/opendistro/reports/definition/on_demand'
+    - 'cluster:admin/opendistro/reports/definition/delete'
+    - 'cluster:admin/opendistro/reports/definition/get'
+    - 'cluster:admin/opendistro/reports/definition/list'
+    - 'cluster:admin/opendistro/reports/definition/get'
+    - 'cluster:admin/opendistro/reports/instance/list'
+    - 'cluster:admin/opendistro/reports/instance/get'
+    - 'cluster:admin/opendistro/reports/menu/download'
+
+vector:
+  reserved: true
+  hidden: false
+  static: true
+  description: 'Shipper Permission'
+  cluster_permissions:
+    - "vector-permissions"
+  index_permissions:
+    - index_patterns:
+      - "*"
+      allowed_actions:
+      - "vector-permissions"

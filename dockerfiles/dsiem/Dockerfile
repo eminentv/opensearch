@@ -1,0 +1,2 @@
+ARG DSIEM_VERSION
+FROM defenxor/dsiem:${DSIEM_VERSION}

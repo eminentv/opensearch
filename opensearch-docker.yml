@@ -1,0 +1,225 @@
+version: '3.3'
+
+networks:
+  traefik-net:
+    external: true
+volumes:
+  OSMASTERDATA:
+  OSNODEDATA2:
+  OSNODEDATA3:
+  OSNODEDATA4:
+  OSNODEDATA5:
+
+services:
+  os-master-1:
+    build:
+      context: ./dockerfiles/opensearch/.
+      args:
+        OPENSEARCH_VERSION: ${OPENSEARCH_VERSION}
+    image: eminent/opensearch
+    restart: unless-stopped
+    container_name: os-node-1
+    ulimits:
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    env_file:
+      - ./.env
+      - ./configs/environments/os-master-1.env
+      - ./configs/environments/secrets.env
+    volumes:
+      - OSMASTERDATA:${OSDATA_MNT}
+      - ${OSCONFIG}:${OSCONFIG_MNT}:ro
+      - ${OSSECURITYCONFIGS}:${OSSECURITYCONFIGS_MNT}:ro
+      - ${OSROOTCA}:${OSROOTCA_MNT}:ro
+      - ${OSADMIN}:${OSADMIN_MNT}:ro
+      - ${OSADMINKEY}:${OSADMINKEY_MNT}:ro
+      - ${OSNODE}:${OSNODE_MNT}:ro
+      - ${OSNODEKEY}:${OSNODEKEY_MNT}:ro
+    networks:
+      traefik-net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.master.rule=Host(`${SERVICE1}.${DEVICE}.${URL}`)"
+      - "traefik.http.routers.master.entrypoints=websecure"
+      - "traefik.http.routers.master.tls=true"
+      - "traefik.http.routers.master.tls.options=default"
+      - "traefik.http.routers.master.tls.certResolver=cloudflare"
+      - "traefik.http.routers.master.service=master"
+      - "traefik.http.services.master.loadbalancer.server.port=9200"
+      - "traefik.http.services.master.loadbalancer.server.scheme=http"
+      - "traefik.http.services.master.loadbalancer.passHostHeader=true"
+      - "traefik.frontend.headers.STSSeconds=63072000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+
+  os-node-2:
+    image: eminent/opensearch
+    restart: unless-stopped
+    container_name: os-node-2
+    ulimits:
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    env_file:
+      - ./.env
+      - ./configs/environments/os-node-2.env
+      - ./configs/environments/secrets.env
+    volumes:
+      - OSNODEDATA2:${OSDATA_MNT}
+      - ${OSCONFIG}:${OSCONFIG_MNT}:ro
+      - ${OSSECURITYCONFIGS}:${OSSECURITYCONFIGS_MNT}:ro
+      - ${OSROOTCA}:${OSROOTCA_MNT}:ro
+      - ${OSADMIN}:${OSADMIN_MNT}:ro
+      - ${OSADMINKEY}:${OSADMINKEY_MNT}:ro
+      - ${OSNODE}:${OSNODE_MNT}:ro
+      - ${OSNODEKEY}:${OSNODEKEY_MNT}:ro
+    networks:
+      traefik-net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.ingest.rule=Host(`${SERVICE}.${DEVICE}.${URL}`)"
+      - "traefik.http.routers.ingest.entrypoints=websecure"
+      - "traefik.http.routers.ingest.tls=true"
+      - "traefik.http.routers.ingest.tls.options=default"
+      - "traefik.http.routers.ingest.tls.certResolver=cloudflare"
+      - "traefik.http.routers.ingest.service=ingest"
+      - "traefik.http.services.ingest.loadbalancer.server.port=9200"
+      - "traefik.http.services.ingest.loadbalancer.server.scheme=http"
+      - "traefik.http.services.ingest.loadbalancer.passHostHeader=true"
+      - "traefik.frontend.headers.STSSeconds=63072000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+
+  os-node-3:
+    image: eminent/opensearch
+    restart: unless-stopped
+    container_name: os-node-3
+    ulimits:
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    env_file:
+      - ./.env
+      - ./configs/environments/os-node-3.env
+      - ./configs/environments/secrets.env
+    volumes:
+      - OSNODEDATA3:${OSDATA_MNT}
+      - ${OSCONFIG}:${OSCONFIG_MNT}:ro
+      - ${OSSECURITYCONFIGS}:${OSSECURITYCONFIGS_MNT}:ro
+      - ${OSROOTCA}:${OSROOTCA_MNT}:ro
+      - ${OSADMIN}:${OSADMIN_MNT}:ro
+      - ${OSADMINKEY}:${OSADMINKEY_MNT}:ro
+      - ${OSNODE}:${OSNODE_MNT}:ro
+      - ${OSNODEKEY}:${OSNODEKEY_MNT}:ro
+    networks:
+      traefik-net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.ingest.rule=Host(`${SERVICE}.${DEVICE}.${URL}`)"
+      - "traefik.http.routers.ingest.entrypoints=websecure"
+      - "traefik.http.routers.ingest.tls=true"
+      - "traefik.http.routers.ingest.tls.options=default"
+      - "traefik.http.routers.ingest.tls.certResolver=cloudflare"
+      - "traefik.http.routers.ingest.service=ingest"
+      - "traefik.http.services.ingest.loadbalancer.server.port=9200"
+      - "traefik.http.services.ingest.loadbalancer.server.scheme=http"
+      - "traefik.http.services.ingest.loadbalancer.passHostHeader=true"
+      - "traefik.frontend.headers.STSSeconds=63072000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+
+  os-node-4:
+    image: eminent/opensearch
+    restart: unless-stopped
+    container_name: os-node-4
+    ulimits:
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    env_file:
+      - ./.env
+      - ./configs/environments/os-node-4.env
+      - ./configs/environments/secrets.env
+    volumes:
+      - OSNODEDATA4:${OSDATA_MNT}
+      - ${OSCONFIG}:${OSCONFIG_MNT}:ro
+      - ${OSSECURITYCONFIGS}:${OSSECURITYCONFIGS_MNT}:ro
+      - ${OSROOTCA}:${OSROOTCA_MNT}:ro
+      - ${OSADMIN}:${OSADMIN_MNT}:ro
+      - ${OSADMINKEY}:${OSADMINKEY_MNT}:ro
+      - ${OSNODE}:${OSNODE_MNT}:ro
+      - ${OSNODEKEY}:${OSNODEKEY_MNT}:ro
+    networks:
+      traefik-net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.master.rule=Host(`${SERVICE1}.${DEVICE}.${URL}`)"
+      - "traefik.http.routers.master.entrypoints=websecure"
+      - "traefik.http.routers.master.tls=true"
+      - "traefik.http.routers.master.tls.options=default"
+      - "traefik.http.routers.master.tls.certResolver=cloudflare"
+      - "traefik.http.routers.master.service=master"
+      - "traefik.http.services.master.loadbalancer.server.port=9200"
+      - "traefik.http.services.master.loadbalancer.server.scheme=http"
+      - "traefik.http.services.master.loadbalancer.passHostHeader=true"
+      - "traefik.frontend.headers.STSSeconds=63072000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+  os-node-5:
+    image: eminent/opensearch
+    restart: unless-stopped
+    container_name: os-node-5
+    ulimits:
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    env_file:
+      - ./.env
+      - ./configs/environments/os-node-5.env
+      - ./configs/environments/secrets.env
+    volumes:
+      - OSNODEDATA5:${OSDATA_MNT}
+      - ${OSCONFIG}:${OSCONFIG_MNT}:ro
+      - ${OSSECURITYCONFIGS}:${OSSECURITYCONFIGS_MNT}:ro
+      - ${OSROOTCA}:${OSROOTCA_MNT}:ro
+      - ${OSADMIN}:${OSADMIN_MNT}:ro
+      - ${OSADMINKEY}:${OSADMINKEY_MNT}:ro
+      - ${OSNODE}:${OSNODE_MNT}:ro
+      - ${OSNODEKEY}:${OSNODEKEY_MNT}:ro
+    networks:
+      traefik-net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.master.rule=Host(`${SERVICE1}.${DEVICE}.${URL}`)"
+      - "traefik.http.routers.master.entrypoints=websecure"
+      - "traefik.http.routers.master.tls=true"
+      - "traefik.http.routers.master.tls.options=default"
+      - "traefik.http.routers.master.tls.certResolver=cloudflare"
+      - "traefik.http.routers.master.service=master"
+      - "traefik.http.services.master.loadbalancer.server.port=9200"
+      - "traefik.http.services.master.loadbalancer.server.scheme=http"
+      - "traefik.http.services.master.loadbalancer.passHostHeader=true"
+      - "traefik.frontend.headers.STSSeconds=63072000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"

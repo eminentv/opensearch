@@ -1,0 +1,39 @@
+version: '3.8'
+networks:
+  traefik-net:
+    external: true
+
+services:
+  opendash:
+    build:
+      context: ./dockerfiles/opendash/.
+      args:
+        OPENSEARCH_VERSION: ${OPENSEARCH_VERSION}
+    image: eminent/opendash
+    container_name: opendash
+    restart: unless-stopped
+    env_file:
+      - ./.env
+      - ./configs/environments/secrets.env
+    volumes:
+      - ${OSDASHCONFIG}:${OSDASHCONFIG_MNT}
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.opendash.rule=Host(`${SERVICE2}.${DEVICE}.${URL}`)"
+      - "traefik.http.routers.opendash.entrypoints=websecure"
+      - "traefik.http.routers.opendash.tls=true"
+      - "traefik.http.routers.opendash.tls.options=default"
+      - "traefik.http.routers.opendash.tls.certResolver=cloudflare"
+      - "traefik.http.routers.opendash.service=opendash"
+      - "traefik.http.services.opendash.loadbalancer.server.port=5601"
+      - "traefik.http.services.opendash.loadbalancer.server.scheme=http"
+      - "traefik.http.services.opendash.loadbalancer.passHostHeader=true"
+      - "traefik.frontend.headers.STSSeconds=63072000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"

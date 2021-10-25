@@ -1,0 +1,54 @@
+---
+# This is the internal user database
+# The hash value is a bcrypt hash and can be generated with plugin/tools/hash.sh
+
+_meta:
+  type: "internalusers"
+  config_version: 2
+
+admin:
+  hash: ${envbc.ESADMINPASS} 
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "admin"
+
+kibanaserver:
+  hash: ${envbc.KIBANAPASS} 
+  reserved: true
+  description: "Kibana Server"
+
+praeco:
+  hash: ${envbc.PRAECOPASS} 
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Praeco Account"
+
+dsiem:
+  hash: ${envbc.DSIEMPASS} 
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "DSIEM Account"
+
+vector:
+  hash: ${envbc.VECTORPASS} 
+  reserved: false
+  backend_roles:
+    - "vector"
+  description: "Shipper"
+
+logstash:
+  hash: ${envbc.LOGSTASHPASS} 
+  reserved: false
+  backend_roles:
+    - "logstash"
+  description: "Logstash User"
+
+snapshotrestore:
+  hash: ${envbc.SNAPSHOTPASS} 
+  reserved: false
+  backend_roles:
+  - "snapshotrestore"
+  description: "snapshotrestore user"
